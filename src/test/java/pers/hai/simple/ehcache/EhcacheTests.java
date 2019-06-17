@@ -115,7 +115,7 @@ public class EhcacheTests {
                         .build(false);
         userManagedCache.init();
 
-        for (int i = 0; i <= 20; i++){
+        for (int i = 0; i <= 20; i++) {
             // 写
             userManagedCache.put(i, String.format("#%d", i));
             // 读
@@ -126,8 +126,10 @@ public class EhcacheTests {
         userManagedCache.close();
     }
 
+    // 测试三级缓存（PersistentCacheManager）
     @Test
     public void test4() {
+        // 缓存路径 -- H:\\myData\\
         PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()
                 .with(CacheManagerBuilder.persistence(getStoragePath() + File.separator + "myData"))
                 .withCache("threeTieredCache",
@@ -141,21 +143,21 @@ public class EhcacheTests {
 
         Cache<Integer, String> threeTieredCache = persistentCacheManager.getCache("threeTieredCache", Integer.class, String.class);
 
-        // 读
-        for (int i = 0; i<= 20000; i++){
+        // 写
+        for (int i = 0; i <= 200000; i++){
             threeTieredCache.put(i, String.format("$%d", i));
         }
 
-        // 写
+        // 读
         for (int i = 0; i <= 200000; i++){
             String value = threeTieredCache.get(i);
-            logger.info(String.format("%d : %s", i, value));
+            logger.info(String.format("[R] %d : %s", i, value));
         }
 
         persistentCacheManager.close();
     }
 
     private static String getStoragePath() {
-        return "d:";
+        return "h:";
     }
 }
