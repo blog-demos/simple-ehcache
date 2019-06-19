@@ -5,7 +5,7 @@
 ![](https://img.shields.io/badge/java-1.8-red.svg)
 ![](https://img.shields.io/badge/intellij%20idea-2018.3.3-brown.svg)
 ![](https://img.shields.io/badge/maven-3.6.0-thistle.svg)
-![](https://img.shields.io/badge/ehcache-3.3.0-orange.svg)
+![](https://img.shields.io/badge/ehcache-3.6.2-orange.svg)
 
 ------------------------------------------
 

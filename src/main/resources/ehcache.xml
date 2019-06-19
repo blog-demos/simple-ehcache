@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <diskStore path="H:\\ehcache" />
+    <defaultCache maxElementsInMemory="100" eternal="true" overflowToDisk="true"/>
+    <cache name="a" maxElementsInMemory="1" eternal="true" overflowToDisk="true" maxElementsOnDisk="0" diskPersistent="true"/>
+</ehcache>

@@ -1,10 +1,7 @@
 package pers.hai.simple.ehcache;
 
 import org.apache.log4j.Logger;
-import org.ehcache.Cache;
-import org.ehcache.CacheManager;
-import org.ehcache.PersistentCacheManager;
-import org.ehcache.UserManagedCache;
+import org.ehcache.*;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -155,6 +152,43 @@ public class EhcacheTests {
         }
 
         persistentCacheManager.close();
+    }
+
+    // 测试持久化磁盘
+    @Test
+    public void test5() {
+        String path = this.getClass().getResource("/").getPath();
+        logger.info("----" + path );
+        // 对于磁盘层，数据存储在磁盘上。磁盘的速度越快、越专注，访问数据的速度就越快。
+        // 要获得一个PersistentCacheManager,其实就是一个普通的通常的CacheManager，但是具有销毁缓存的能力。
+        PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+                .with(CacheManagerBuilder.persistence(new File(path, "myData"))) //提供一个存储数据的位置
+                .withCache("cache_1",
+                        CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class,
+                                // 为缓存使用的磁盘定义一个资源池。第三个参数是一个布尔值，用于设置磁盘池是否持久。
+                                // 当设置为true时，池是持久的。当使用两个参数磁盘(long、MemoryUnit)的版本时，池就不会持久。
+                                ResourcePoolsBuilder.newResourcePoolsBuilder()
+                                        // 您为堆定义了一个资源池,该堆内只允许存放10个条目
+                                        .heap(10, EntryUnit.ENTRIES)
+                                        // 您为非堆定义了一个资源池。仍然非常快，而且有点大。该大小为1M
+                                        /*.offheap(1, MemoryUnit.MB)*/
+                                        // 您为磁盘定义一个持久的资源池。它是持久性的，因为它应该是(最后一个参数是正确的)。
+                                        .disk(10, MemoryUnit.MB, true))
+                )
+                .build(true);
+
+        Cache<Long, String> cache = persistentCacheManager.getCache("cache_1", Long.class, String.class);
+        //存储在缓存中的所有值都将在JVM重新启动后可用(假定CacheManager通过调用close()已被干净地关闭了。
+        cache.put(1L, "stillAvailableAfterRestart");
+        logger.info(String.format("cache, 获取信息：%s", cache.get(1L)));
+        persistentCacheManager.close();
+        //上面的示例分配了非常少量的磁盘存储。您通常会使用更大的存储空间。
+        //持久性意味着缓存将在JVM重新启动后存活。在重新启动JVM并在相同的位置创建一个CacheManager磁盘持久性之后，缓存中的所有内容仍然存在。
+        //磁盘层不能在缓存管理器之间共享。一个持久性目录是专门针对一个缓存管理器的。
+        //请记住，存储在磁盘上的数据必须被序列化/反序列化，并写入/从磁盘读取/读取，因此比堆和off堆要慢。因此，磁盘存储很有趣:
+        //* 你有大量的数据不适合堆在堆里
+        //* 你的磁盘比它缓存的存储快得多
+        //* 你对持久性感兴趣
     }
 
     private static String getStoragePath() {
