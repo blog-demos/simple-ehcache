@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ehcache>
-    <diskStore path="H:\\ehcache" />
-    <defaultCache maxElementsInMemory="100" eternal="true" overflowToDisk="true"/>
-    <cache name="a" maxElementsInMemory="1" eternal="true" overflowToDisk="true" maxElementsOnDisk="0" diskPersistent="true"/>
-</ehcache>
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+    <persistence directory="d:\\mycache"/>
+
+    <cache alias="cache_1">
+        <key-type>java.lang.Long</key-type>
+        <value-type>java.lang.String</value-type>
+        <heap unit="entries">200</heap>
+    </cache>
+
+</config>
