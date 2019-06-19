@@ -8,14 +8,10 @@ import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.builders.UserManagedCacheBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
-import org.ehcache.spi.service.ServiceCreationConfiguration;
 import org.ehcache.xml.XmlConfiguration;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.URL;
 
 /**
@@ -231,10 +227,6 @@ public class EhcacheTests {
 
         cache.clear();
         manager.close();
-    }
-
-    @Test
-    public void test7_1() {
     }
 
     private static String getStoragePath() {
